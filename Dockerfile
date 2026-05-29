@@ -1,0 +1,24 @@
+# clean base image containing only comfyui, comfy-cli and comfyui-manager
+FROM runpod/worker-comfyui:5.8.4-base
+
+# build-time tokens for gated downloads — never baked into final image.
+# pass via: docker build --build-arg HF_TOKEN=$HF_TOKEN ...
+ARG HF_TOKEN=""
+
+# install custom nodes into comfyui
+RUN git clone https://github.com/kijai/ComfyUI-WanVideoWrapper /comfyui/custom_nodes/ComfyUI-WanVideoWrapper && cd /comfyui/custom_nodes/ComfyUI-WanVideoWrapper && (git checkout d9b1f4d1a5aea91d101ae97a54714a5861af3f50 2>/dev/null || (git fetch origin d9b1f4d1a5aea91d101ae97a54714a5861af3f50 --depth=1 && git checkout d9b1f4d1a5aea91d101ae97a54714a5861af3f50) || echo "WARN: commit d9b1f4d1a5aea91d101ae97a54714a5861af3f50 unreachable in https://github.com/kijai/ComfyUI-WanVideoWrapper, falling back to default branch HEAD")
+RUN git clone https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite /comfyui/custom_nodes/ComfyUI-VideoHelperSuite && cd /comfyui/custom_nodes/ComfyUI-VideoHelperSuite && (git checkout 0a75c7958fe320efcb052f1d9f8451fd20c730a8 2>/dev/null || (git fetch origin 0a75c7958fe320efcb052f1d9f8451fd20c730a8 --depth=1 && git checkout 0a75c7958fe320efcb052f1d9f8451fd20c730a8) || echo "WARN: commit 0a75c7958fe320efcb052f1d9f8451fd20c730a8 unreachable in https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite, falling back to default branch HEAD")
+RUN git clone https://github.com/kijai/ComfyUI-KJNodes /comfyui/custom_nodes/ComfyUI-KJNodes && cd /comfyui/custom_nodes/ComfyUI-KJNodes && (git checkout ad37ce656c13e9abea002b46e3a89be3dba32355 2>/dev/null || (git fetch origin ad37ce656c13e9abea002b46e3a89be3dba32355 --depth=1 && git checkout ad37ce656c13e9abea002b46e3a89be3dba32355) || echo "WARN: commit ad37ce656c13e9abea002b46e3a89be3dba32355 unreachable in https://github.com/kijai/ComfyUI-KJNodes, falling back to default branch HEAD")
+
+# download models into comfyui
+RUN BACKOFFS="10 20 30 60 90" && for i in 1 2 3 4 5; do HF_TOKEN=$HF_TOKEN comfy model download --url 'https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/text_encoders/umt5_xxl_fp16.safetensors' --relative-path models/text_encoders --filename 'umt5_xxl_fp16.safetensors' && break; if [ $i -eq 5 ]; then echo "model-download failed after 5 attempts" >&2; exit 1; fi; SLEEP=$(echo $BACKOFFS | cut -d ' ' -f $i) && echo "model-download attempt $i failed; retrying in $SLEEP seconds" >&2; sleep $SLEEP; done
+RUN BACKOFFS="10 20 30 60 90" && for i in 1 2 3 4 5; do HF_TOKEN=$HF_TOKEN comfy model download --url 'https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/clip_vision/clip_vision_h.safetensors' --relative-path models/clip_vision --filename 'clip_vision_h.safetensors' && break; if [ $i -eq 5 ]; then echo "model-download failed after 5 attempts" >&2; exit 1; fi; SLEEP=$(echo $BACKOFFS | cut -d ' ' -f $i) && echo "model-download attempt $i failed; retrying in $SLEEP seconds" >&2; sleep $SLEEP; done
+RUN BACKOFFS="10 20 30 60 90" && for i in 1 2 3 4 5; do HF_TOKEN=$HF_TOKEN comfy model download --url 'https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/umt5-xxl-enc-bf16.safetensors' --relative-path models/Unknown --filename 'umt5-xxl-enc-bf16.safetensors' && break; if [ $i -eq 5 ]; then echo "model-download failed after 5 attempts" >&2; exit 1; fi; SLEEP=$(echo $BACKOFFS | cut -d ' ' -f $i) && echo "model-download attempt $i failed; retrying in $SLEEP seconds" >&2; sleep $SLEEP; done
+RUN BACKOFFS="10 20 30 60 90" && for i in 1 2 3 4 5; do HF_TOKEN=$HF_TOKEN comfy model download --url 'https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/vae/wan_2.1_vae.safetensors' --relative-path models/vae --filename 'wanvideo/Wan2_1_VAE_bf16.safetensors' && break; if [ $i -eq 5 ]; then echo "model-download failed after 5 attempts" >&2; exit 1; fi; SLEEP=$(echo $BACKOFFS | cut -d ' ' -f $i) && echo "model-download attempt $i failed; retrying in $SLEEP seconds" >&2; sleep $SLEEP; done
+RUN BACKOFFS="10 20 30 60 90" && for i in 1 2 3 4 5; do HF_TOKEN=$HF_TOKEN comfy model download --url 'https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/diffusion_models/wan2.1_t2v_14B_fp8_e4m3fn.safetensors' --relative-path models/diffusion_models --filename 'Wan2_2-I2V-A14B-HIGH_fp8_e4m3fn_scaled_KJ.safetensors' && break; if [ $i -eq 5 ]; then echo "model-download failed after 5 attempts" >&2; exit 1; fi; SLEEP=$(echo $BACKOFFS | cut -d ' ' -f $i) && echo "model-download attempt $i failed; retrying in $SLEEP seconds" >&2; sleep $SLEEP; done
+
+# copy all input data (like images or videos) into comfyui (uncomment and adjust if needed)
+# COPY input/ /comfyui/input/
+
+# user-provided inputs override the auto-generated placeholders above.
+RUN wget --progress=dot:giga -O '/comfyui/input/oldman_upscaled.png' "https://cool-anteater-319.convex.cloud/api/storage/81c787fe-8fc2-44c4-a511-58dfac830ff8"
