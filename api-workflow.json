@@ -24,7 +24,7 @@
   },
   "22": {
     "inputs": {
-      "model": "Wan2_2-I2V-A14B-HIGH_fp8_e4m3fn_scaled_KJ.safetensors",
+      "model": "Wan2_2-I2V-A14B-HIGH_bf16.safetensors",
       "base_precision": "fp16_fast",
       "quantization": "fp8_e4m3fn_scaled",
       "load_device": "offload_device",
