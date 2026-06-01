@@ -26,7 +26,7 @@
     "inputs": {
       "model": "Wan2_2-I2V-A14B-HIGH_bf16.safetensors",
       "base_precision": "fp16_fast",
-      "quantization": "fp8_e4m3fn_scaled",
+      "quantization": "fp8_e4m3fn_fast",
       "load_device": "offload_device",
       "attention_mode": "sdpa"
     },
