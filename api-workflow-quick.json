@@ -11,8 +11,8 @@
   },
   "16": {
     "inputs": {
-      "positive_prompt": "Two Brazilian truck drivers, Pedro and Bine, sitting confidently in a truck cab on a Brazilian highway, looking at the camera with pride, realistic cinematic lighting, high quality 4K video, FleetPay logo overlay, professional documentary style",
-      "negative_prompt": "static, blurry, low quality, distorted, ugly hands, deformed face, extra fingers, watermark, text overlay, jpeg artifacts, overexposed, low resolution",
+      "positive_prompt": "A man smiling and waving at the camera, cinematic lighting",
+      "negative_prompt": "static, blurry, low quality, distorted, watermark",
       "force_offload": true,
       "use_disk_cache": false,
       "device": "gpu",
@@ -35,7 +35,7 @@
   },
   "27": {
     "inputs": {
-      "steps": 20,
+      "steps": 6,
       "cfg": 5.0,
       "shift": 5.0,
       "seed": 0,
@@ -74,7 +74,7 @@
       "images": ["28", 0],
       "frame_rate": 16,
       "loop_count": 0,
-      "filename_prefix": "FleetPay_WanVideo2_2",
+      "filename_prefix": "FleetPay_Quick",
       "format": "video/h264-mp4",
       "pix_fmt": "yuv420p",
       "crf": 19,
@@ -121,7 +121,7 @@
   },
   "63": {
     "inputs": {
-      "num_frames": 129,
+      "num_frames": 33,
       "noise_aug_strength": 0.03,
       "start_latent_strength": 1.0,
       "end_latent_strength": 1.0,
@@ -155,8 +155,8 @@
   "68": {
     "inputs": {
       "image": ["58", 0],
-      "width": 832,
-      "height": 480,
+      "width": 480,
+      "height": 272,
       "upscale_method": "lanczos",
       "keep_proportion": "pad",
       "pad_color": "0, 0, 0",

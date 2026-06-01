@@ -22,3 +22,6 @@ RUN BACKOFFS="10 20 30 60 90" && for i in 1 2 3 4 5; do HF_TOKEN=$HF_TOKEN comfy
 
 # user-provided inputs override the auto-generated placeholders above.
 RUN wget --progress=dot:giga -O '/comfyui/input/oldman_upscaled.png' "https://cool-anteater-319.convex.cloud/api/storage/81c787fe-8fc2-44c4-a511-58dfac830ff8"
+
+# patched handler: returns VHS_VideoCombine outputs (gifs/videos) as base64 or S3
+COPY handler.py /handler.py
