@@ -24,9 +24,9 @@
   },
   "22": {
     "inputs": {
-      "model": "Wan2_2-I2V-A14B-HIGH_bf16.safetensors",
+      "model": "Wan2_2-I2V-A14B-HIGH_fp8.safetensors",
       "base_precision": "bf16",
-      "quantization": "fp8_e4m3fn",
+      "quantization": "disabled",
       "load_device": "offload_device",
       "attention_mode": "sdpa"
     },
@@ -35,9 +35,9 @@
   },
   "23": {
     "inputs": {
-      "model": "Wan2_2-I2V-A14B-LOW_bf16.safetensors",
+      "model": "Wan2_2-I2V-A14B-LOW_fp8.safetensors",
       "base_precision": "bf16",
-      "quantization": "fp8_e4m3fn",
+      "quantization": "disabled",
       "load_device": "offload_device",
       "attention_mode": "sdpa"
     },
